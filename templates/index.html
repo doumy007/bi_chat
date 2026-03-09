@@ -6,26 +6,106 @@
     <title>Dashboard & AI Chat</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; }
-        header { background: #004578; color: white; padding: 15px; text-align: center; }
         
-        .main-container { display: flex; flex: 1; overflow: hidden; }
-        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; /* Evita scroll doble en la página completa */
+        }
+
+        header { 
+            background: #004578; 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            flex-shrink: 0;
+        }
+
+        /* Contenedor Principal Adaptable */
+        .main-container { 
+            display: flex; 
+            flex: 1; 
+            flex-direction: row; /* Horizontal en PC */
+            overflow: hidden; 
+        }
+
         /* Lado Izquierdo: Power BI */
-        .report-section { flex: 2; padding: 20px; display: flex; align-items: center; justify-content: center; background: #e5e5e5; }
-        iframe { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; height: 90%; }
+        .report-section { 
+            flex: 2; 
+            padding: 10px; 
+            display: flex; 
+            background: #e5e5e5; 
+            height: 100%;
+        }
+        
+        iframe { 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            width: 100%; 
+            height: 100%; 
+        }
 
         /* Lado Derecho: Chat */
-        .chat-section { flex: 1; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; max-width: 450px; }
-        #chat-window { flex: 1; padding: 20px; overflow-y: auto; background: #fff; }
-        .message { margin-bottom: 15px; padding: 10px; border-radius: 8px; line-height: 1.4; }
-        .user-msg { background: #dcf8c6; align-self: flex-end; margin-left: 20%; }
-        .ai-msg { background: #f1f0f0; align-self: flex-start; margin-right: 20%; font-family: monospace; font-size: 0.9em; }
+        .chat-section { 
+            flex: 1; 
+            background: white; 
+            border-left: 1px solid #ddd; 
+            display: flex; 
+            flex-direction: column; 
+            max-width: 450px; 
+            min-width: 300px;
+        }
 
-        .input-area { padding: 20px; border-top: 1px solid #ddd; display: flex; gap: 10px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-        button { padding: 10px 20px; background: #004578; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #002d4f; }
+        #chat-window { 
+            flex: 1; 
+            padding: 15px; 
+            overflow-y: auto; 
+            background: #fff; 
+        }
+
+        .message { margin-bottom: 15px; padding: 12px; border-radius: 8px; line-height: 1.4; font-size: 14px; }
+        .user-msg { background: #dcf8c6; align-self: flex-end; margin-left: 15%; border: 1px solid #c5e1a5; }
+        .ai-msg { background: #f1f0f0; align-self: flex-start; margin-right: 15%; border: 1px solid #e0e0e0; }
+
+        .input-area { 
+            padding: 15px; 
+            border-top: 1px solid #ddd; 
+            display: flex; 
+            gap: 8px; 
+            background: #f9f9f9;
+        }
+
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+        button { padding: 10px 18px; background: #004578; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+        /* --- MEDIA QUERIES PARA MÓVIL --- */
+        @media (max-width: 768px) {
+            .main-container { 
+                flex-direction: column; /* Vertical en Celular */
+                overflow-y: auto; /* Permite scroll si el contenido es largo */
+            }
+
+            .report-section { 
+                flex: none; 
+                height: 45vh; /* El reporte ocupa casi la mitad de la pantalla */
+                width: 100%;
+            }
+
+            .chat-section { 
+                flex: 1; 
+                max-width: 100%; 
+                min-width: 100%; 
+                border-left: none;
+                border-top: 2px solid #ddd;
+                height: 55vh; /* El chat ocupa el resto */
+            }
+
+            header h2 { font-size: 18px; }
+        }
     </style>
 </head>
 <body>
@@ -44,10 +124,10 @@
 
     <div class="chat-section">
         <div id="chat-window">
-            <div class="message ai-msg">Hola,Soy la inteligencia artificial de Dimitry . ¿Qué información deseas consultar hoy?</div>
+            <div class="message ai-msg">Hola, soy la inteligencia artificial de Dimitry. ¿Qué información deseas consultar hoy?</div>
         </div>
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="Pregunta sobre la data...">
+            <input type="text" id="user-input" placeholder="Pregunta sobre la data..." onkeypress="if(event.key==='Enter') enviarPregunta()">
             <button onclick="enviarPregunta()">Consultar</button>
         </div>
     </div>
@@ -60,9 +140,9 @@
         const texto = input.value;
         if (!texto) return;
 
-        // Mostrar pregunta usuario
         chatWindow.innerHTML += `<div class="message user-msg">${texto}</div>`;
         input.value = '';
+        chatWindow.scrollTop = chatWindow.scrollHeight;
 
         try {
             const response = await fetch('/preguntar', {
@@ -72,7 +152,6 @@
             });
             const data = await response.json();
             
-            // Mostrar respuesta IA
             chatWindow.innerHTML += `<div class="message ai-msg"><b>Respuesta:</b><br>${data.respuesta.replace(/\n/g, '<br>')}</div>`;
             chatWindow.scrollTop = chatWindow.scrollHeight;
         } catch (err) {
