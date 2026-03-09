@@ -7,4 +7,4 @@ DB_CONFIG = {
 }
 
 # Configuración de OpenAI (Asegúrate de poner tu API Key aquí)
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
