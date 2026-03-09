@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard & AI Chat</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; height: 100vh; display: flex; flex-direction: column; }
+        header { background: #004578; color: white; padding: 15px; text-align: center; }
+        
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Lado Izquierdo: Power BI */
+        .report-section { flex: 2; padding: 20px; display: flex; align-items: center; justify-content: center; background: #e5e5e5; }
+        iframe { border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; height: 90%; }
+
+        /* Lado Derecho: Chat */
+        .chat-section { flex: 1; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; max-width: 450px; }
+        #chat-window { flex: 1; padding: 20px; overflow-y: auto; background: #fff; }
+        .message { margin-bottom: 15px; padding: 10px; border-radius: 8px; line-height: 1.4; }
+        .user-msg { background: #dcf8c6; align-self: flex-end; margin-left: 20%; }
+        .ai-msg { background: #f1f0f0; align-self: flex-start; margin-right: 20%; font-family: monospace; font-size: 0.9em; }
+
+        .input-area { padding: 20px; border-top: 1px solid #ddd; display: flex; gap: 10px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+        button { padding: 10px 20px; background: #004578; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #002d4f; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Sistema de Inteligencia de Datos - Google Ads</h2>
+</header>
+
+<div class="main-container">
+    <div class="report-section">
+        <iframe title="bi google" 
+                src="https://app.powerbi.com/reportEmbed?reportId=92c3bcdc-4dc6-4e05-8783-efdd8e0dc66a&autoAuth=true&ctid=2cac6292-3635-4863-ab5f-1270fd538645" 
+                frameborder="0" allowFullScreen="true">
+        </iframe>
+    </div>
+
+    <div class="chat-section">
+        <div id="chat-window">
+            <div class="message ai-msg">Hola,Soy la inteligencia artificial de Dimitry . ¿Qué información deseas consultar hoy?</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Pregunta sobre la data...">
+            <button onclick="enviarPregunta()">Consultar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function enviarPregunta() {
+        const input = document.getElementById('user-input');
+        const chatWindow = document.getElementById('chat-window');
+        const texto = input.value;
+        if (!texto) return;
+
+        // Mostrar pregunta usuario
+        chatWindow.innerHTML += `<div class="message user-msg">${texto}</div>`;
+        input.value = '';
+
+        try {
+            const response = await fetch('/preguntar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pregunta: texto })
+            });
+            const data = await response.json();
+            
+            // Mostrar respuesta IA
+            chatWindow.innerHTML += `<div class="message ai-msg"><b>Respuesta:</b><br>${data.respuesta.replace(/\n/g, '<br>')}</div>`;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        } catch (err) {
+            chatWindow.innerHTML += `<div class="message ai-msg" style="color:red">Error al conectar con el servidor.</div>`;
+        }
+    }
+</script>
+
+</body>
+</html>
