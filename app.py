@@ -84,4 +84,7 @@ def preguntar():
         return jsonify({"respuesta": f"Error: {str(e)}"})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Render asigna un puerto automáticamente en la variable de entorno PORT
+    port = int(os.environ.get("PORT", 5000))
+    # Debes usar host='0.0.0.0' para que sea accesible externamente
+    app.run(host='0.0.0.0', port=port, debug=False)
