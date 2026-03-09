@@ -1,6 +1,6 @@
-p1 = "sk-proj-K5V73-64O7xyHIgGIaL95r"
-p2 = "9xJ1AnCIfl1FXJlKW0VJHpZh562aDPLZ0uT5iXY"
-p3 = "--vYrGXo8ZkMUT3BlbkFJRYrJ_DxbgwQzKKTAmM8WIqXRuqSzUAS0zsnJmyDgb6O9gc4nPtiqO8s4Ez8KKMsBHCSmpEk60A"
+p1 = "sk-proj-8SZcPhsXzBN-zbHM80e"
+p2 = "d-w23cp1giMeennDGvX-kxO_ZX-fFzBEd__-jhX8"
+p3 = "-DwdI37HrnNUY9oT3BlbkFJayaYk__DL1BzNutz6tPEn496eWvQ6X49EgIZFnm0cO6wVfh8ue3KRu57AJwEokrbJnrQCEPgQA"
 
 # Las unes al momento de usarlas
 OPENAI_API_KEY = p1 + p2 + p3
